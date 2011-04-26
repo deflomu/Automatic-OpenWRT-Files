@@ -1,0 +1,4 @@
+config 'automatic'	
+	option 'username' 'nobody'
+	option 'config_file' '/etc/automatic/automatic.conf'
+	option 'enabled' '1'

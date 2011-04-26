@@ -1,0 +1,33 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2010 skweez.net
+START=50
+
+BIN=/usr/bin/automatic
+SSD=start-stop-daemon
+
+start_service() {
+	local section="$1"
+	args=""
+	config_get username		"$section" "username"
+	config_get config_file		"$section" "config_file"
+	config_get_bool "enabled"	"$section" "enabled" '1'
+	[ "$enabled" -gt 0 ] && $SSD -S -c ${username:-nobody} -x $BIN -- -l syslog -c ${config_file:-/etc/automatic/automatic.conf}
+}
+
+stop_service() {
+	local section="$1"
+	args=""
+	config_get username		"$section" "username"
+	start-stop-daemon -K -x $BIN -c ${username:-nobody} -s 2
+}
+
+start() {
+	config_load automatic
+	config_foreach start_service automatic
+}
+
+stop() {
+	config_load automatic
+	config_foreach stop_service automatic
+}
+
