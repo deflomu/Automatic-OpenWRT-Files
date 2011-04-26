@@ -1,1 +1,8 @@
 Automatic is an RSS downloader for Linux based systems, that grabs your favorite torrents based on filters you specify.
+
+BUILD
+
+$ scripts/feeds update -a
+$ scripts/feeds install libxml2 libpcre libcurl
+$ make toolchain/install
+$ make package/automatic/{clean,compile,install} V=99 DEVELOPER=1
