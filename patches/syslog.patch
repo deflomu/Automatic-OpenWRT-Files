@@ -1,0 +1,74 @@
+diff -rupN automatic-0.6.4_orig/src/output.c automatic-0.6.4/src/output.c
+--- automatic-0.6.4_orig/src/output.c	2010-12-18 11:44:02.713043781 +0100
++++ automatic-0.6.4/src/output.c	2010-12-19 15:18:01.470824487 +0100
+@@ -36,13 +36,17 @@
+ #include <stdarg.h>
+ #include <time.h>
+ #include <sys/time.h>
++#include <syslog.h>
+ 
+ #include "output.h"
+ 
+ #define MSGSIZE_MAX     5000
+ 
++typedef enum { false, true } BOOL;
++
+ static FILE   *gLogFP = NULL;
+ static int8_t  gMsglevel;
++static BOOL    useSyslog = false;
+ 
+ unsigned char log_init(const char *logfile, char msglevel, char append_log) {
+   gMsglevel = msglevel;
+@@ -51,7 +55,11 @@ unsigned char log_init(const char *logfi
+     if(gLogFP) {
+       log_close();
+     }
+-    if((gLogFP = fopen(logfile, append_log ? "a" : "w")) == NULL) {
++    if(strcmp(logfile, "syslog") == 0) {
++      useSyslog = true;
++      openlog("automatic", LOG_CONS | LOG_PID | LOG_NDELAY, 0);
++    }
++    else if((gLogFP = fopen(logfile, append_log ? "a" : "w")) == NULL) {
+       /* this should work just fine: the message level has been set above, and if gLogFP is NULL,
+       ** logging goes to stderr.
+       */
+@@ -63,6 +71,9 @@ unsigned char log_init(const char *logfi
+ }
+ 
+ void log_close(void) {
++  if(useSyslog) {
++    closelog();
++  }
+   if(gLogFP) {
+     fclose(gLogFP);
+     gLogFP = NULL;
+@@ -91,17 +102,23 @@ void am_printf( const char * file, int l
+     va_end(va);
+     tmp[MSGSIZE_MAX-1] = '\0';
+ 
+-    fp = gLogFP ? gLogFP : stderr; /* log to stderr in case no logfile has been specified */
++    char buf [MSGSIZE_MAX + sizeof(file) + sizeof(line) + 1024];
+     if(withTime) {
+-      fprintf(fp, "[%s] ", getlogtime_str(timeStr));
++      sprintf(buf, "[%s] ", getlogtime_str(timeStr));
+     }
+ 
+-    if(P_INFO2 >= type || P_ERROR == type) {
+-      fprintf(fp, "%s, %d: %s\n", file, line, tmp);
++    if(P_INFO2 <= type || P_ERROR == type) {
++      sprintf(buf, "%s, %d: %s\n", file, line, tmp);
+     } else {
+-      fprintf(fp,"%s\n", tmp);
++      sprintf(buf,"%s\n", tmp);
++    }
++    fp = gLogFP ? gLogFP : stderr; /* log to stderr in case no logfile has been specified */
++    if(useSyslog) {
++      syslog(LOG_NOTICE ,"%s", buf);
++    } else { 
++      fprintf(fp, "%s", buf);
++      fflush(fp);
+     }
+-    fflush(fp);
+   }
+ }
+ 
