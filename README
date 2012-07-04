@@ -3,6 +3,7 @@ Automatic is an RSS downloader for Linux based systems, that grabs your favorite
 BUILD
 
 $ scripts/feeds update -a
-$ scripts/feeds install libxml2 libpcre libcurl
+$ scripts/feeds install automatic
+$ make tools/install
 $ make toolchain/install
 $ make package/automatic/{clean,compile,install} V=99 DEVELOPER=1
