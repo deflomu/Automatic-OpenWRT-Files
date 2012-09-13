@@ -15,4 +15,4 @@ Apply patch from http://patchwork.openwrt.org/patch/2351/ to feeds/packages/libs
 INSTALL
 =======
 
-Copy automatic_*_mipsel.ipk and libpcrecpp_*_mipsel.ipk from bin/packages/mipsel/ to the fon router and install both with opkg.
+Copy automatic_*_mipsel.ipk and libpcrecpp_*_mipsel.ipk from bin/packages/mipsel/ to the fon router and install both with opkg. Enable in /etc/config/automatic. Start with /etc/init.d/automatic start.
