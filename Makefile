@@ -19,7 +19,7 @@ include $(INCLUDE_DIR)/package.mk
 define Package/automatic
   SECTION:=base
   CATEGORY:=Network
-  DEPENDS:=+libcurl +libxml2 +libpcrecpp
+  DEPENDS:=+libcurl +libxml2 +libpcrecpp +libpcre
   TITLE:=A RSS torrent downloader
   URL:=http://kylek.is-a-geek.org:31337/Automatic/
 endef
