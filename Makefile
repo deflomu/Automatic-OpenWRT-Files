@@ -1,9 +1,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=automatic
-PKG_VERSION:=0.8.0
+PKG_VERSION:=0.7.2
 PKG_RELEASE:=1
-PKG_REV:=48325d6edaf09e2e64bd61dabfdb01e93f1a5fb5
+PKG_REV:=3acd9b3f0956ad27c339ff37f769cc20966967a5
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/automatic-$(PKG_VERSION)
 PKG_SOURCE:=${PKG_NAME}-$(PKG_VERSION).tar.gz
@@ -27,8 +27,6 @@ endef
 define Package/automatic/Description
   Automatic is an RSS downloader for Linux based systems, that grabs your favorite torrents based on filters you specify
 endef
-
-CONFIGURE_CMD =./autogen.sh
 
 define Package/automatic/install
         $(INSTALL_DIR) $(1)/usr/bin
