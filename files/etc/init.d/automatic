@@ -11,6 +11,7 @@ start_service() {
 	config_get username		"$section" "username"
 	config_get config_file		"$section" "config_file"
 	config_get_bool "enabled"	"$section" "enabled" '1'
+	export LD_LIBRARY_PATH=/tmp/images/torrent/usr/lib:$LD_LIBRARY_PATH
 	[ "$enabled" -gt 0 ] && $SSD -S -c ${username:-nobody} -x $BIN -- -l syslog -c ${config_file:-/etc/automatic/automatic.conf}
 }
 
